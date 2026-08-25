@@ -202,15 +202,16 @@ private struct VoteButton: View {
                     .foregroundStyle(isSelected ? color : Color.white)
                 Text(sublabel)
                     .font(.system(size: 10))
-                    .foregroundStyle(isSelected ? color.opacity(0.7) : Color.yoloTextTertiary)
+                    .foregroundStyle(isSelected ? color : Color.yoloTextTertiary)
             }
             .frame(maxWidth: .infinity)
+            .frame(minHeight: 44)
             .padding(.vertical, 16)
-            .background(isSelected ? color.opacity(0.1) : Color.yoloSurface)
+            .background(isSelected ? color.opacity(0.15) : Color.yoloSurface)
             .clipShape(RoundedRectangle(cornerRadius: YoloRadius.md))
             .overlay(
                 RoundedRectangle(cornerRadius: YoloRadius.md)
-                    .strokeBorder(isSelected ? color.opacity(0.5) : Color.yoloBorder, lineWidth: isSelected ? 1.5 : 0.5)
+                    .strokeBorder(isSelected ? color : Color.yoloBorder, lineWidth: isSelected ? 1 : 0.5)
             )
             .scaleEffect(isSelected ? 1.03 : 1)
         }

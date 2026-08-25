@@ -52,14 +52,14 @@ struct MemberProfileView: View {
             ZStack {
                 Circle()
                     .fill(member.avatarColor.opacity(0.15))
-                    .frame(width: 88, height: 88)
+                    .frame(width: 96, height: 96)
                 Text(String(member.name.prefix(1)).uppercased())
                     .font(.system(size: 36, weight: .bold))
                     .foregroundStyle(member.avatarColor)
             }
 
             Text(member.name)
-                .font(.system(size: 24, weight: .bold))
+                .font(.system(size: 26, weight: .black))
                 .foregroundStyle(Color.white)
 
             HStack(spacing: 6) {
@@ -187,7 +187,7 @@ private struct MemberStatTile: View {
                 .font(.system(size: 18))
                 .foregroundStyle(tint)
             Text(value)
-                .font(.system(size: 24, weight: .bold))
+                .font(.system(size: 26, weight: .bold))
                 .foregroundStyle(Color.white)
             Text(label)
                 .font(.system(size: 11))

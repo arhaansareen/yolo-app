@@ -28,13 +28,13 @@ struct ChipButton: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 14, weight: isSelected ? .semibold : .regular))
-                .foregroundStyle(isSelected ? Color.black : Color.white)
+                .foregroundStyle(isSelected ? Color.yoloGold : Color.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 9)
-                .background(isSelected ? Color.yoloGold : Color.yoloSurface2)
+                .background(isSelected ? Color.yoloGold.opacity(0.12) : Color.yoloSurface2)
                 .clipShape(Capsule())
                 .overlay(
-                    Capsule().strokeBorder(isSelected ? Color.clear : Color.yoloBorder, lineWidth: 0.5)
+                    Capsule().strokeBorder(isSelected ? Color.yoloGold : Color.yoloBorder, lineWidth: isSelected ? 1 : 0.5)
                 )
         }
         .buttonStyle(PressEffectButtonStyle())

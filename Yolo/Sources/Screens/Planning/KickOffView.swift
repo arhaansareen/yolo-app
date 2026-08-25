@@ -98,6 +98,7 @@ struct KickOffView: View {
                 navigate = true
             }
             .disabled(selectedActivity == nil)
+            .shadow(color: Color.yoloGold.opacity(0.25), radius: 12, y: 4)
             .padding(.horizontal, YoloSpacing.md)
             .padding(.bottom, 36)
         }
@@ -119,19 +120,19 @@ private struct ActivityTile: View {
             VStack(spacing: 8) {
                 Image(systemName: activity.icon)
                     .font(.system(size: 22, weight: .medium))
-                    .foregroundStyle(isSelected ? Color.black : Color.yoloGold)
+                    .foregroundStyle(Color.yoloGold)
                 Text(activity.rawValue)
                     .font(.system(size: 12, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? Color.black : Color.white)
+                    .foregroundStyle(isSelected ? Color.yoloGold : Color.white)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 82)
-            .background(isSelected ? Color.yoloGold : Color.yoloSurface)
+            .background(isSelected ? Color.yoloGold.opacity(0.1) : Color.yoloSurface)
             .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous)
-                    .strokeBorder(isSelected ? Color.clear : Color.yoloBorder, lineWidth: 0.5)
+                    .strokeBorder(isSelected ? Color.yoloGold : Color.yoloBorder, lineWidth: isSelected ? 1 : 0.5)
             )
             .scaleEffect(isSelected ? 1.03 : 1)
         }

@@ -175,7 +175,11 @@ private struct SuggestionCard: View {
                             Text("TOP PICK")
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundStyle(Color.yoloGold)
-                                .tracking(0.8)
+                                .tracking(1.2)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(Color.yoloGold.opacity(0.12))
+                                .clipShape(Capsule())
                         }
                         Text(suggestion.title)
                             .font(.system(size: 18, weight: .bold))
@@ -231,7 +235,10 @@ private struct SuggestionCard: View {
             .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous)
-                    .strokeBorder(isSelected ? Color.yoloGold.opacity(0.4) : Color.yoloBorder, lineWidth: isSelected ? 1 : 0.5)
+                    .strokeBorder(
+                        isSelected ? Color.yoloGold : (isTopPick ? Color.yoloGold : Color.yoloBorder),
+                        lineWidth: isSelected ? 1 : (isTopPick ? 1 : 0.5)
+                    )
             )
         }
         .buttonStyle(PressEffectButtonStyle())

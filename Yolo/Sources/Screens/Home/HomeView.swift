@@ -94,10 +94,8 @@ struct GroupsFeedView: View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("yolo.")
-                    .font(.system(size: 30, weight: .bold, design: .serif))
-                    .foregroundStyle(
-                        LinearGradient(colors: [Color.yoloGoldLight, Color.yoloGold], startPoint: .leading, endPoint: .trailing)
-                    )
+                    .font(.system(size: 32, weight: .black))
+                    .foregroundStyle(Color.yoloGold)
                 Text("make the plan real.")
                     .font(.system(size: 14))
                     .foregroundStyle(Color.yoloTextSecondary)
@@ -218,7 +216,8 @@ struct GroupCard: View {
                 }
             }
         }
-        .padding(YoloSpacing.md)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 }
 
@@ -331,6 +330,7 @@ struct YoloTabBar: View {
                     .foregroundStyle(isActive ? Color.yoloGold : Color.yoloTextTertiary)
             }
             .frame(maxWidth: .infinity)
+            .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
         .buttonStyle(PressEffectButtonStyle())

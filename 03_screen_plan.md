@@ -229,7 +229,7 @@ Unlocked when plan type = trip (cottage, travel, multi-day).
 
 - **Language:** Swift / SwiftUI
 - **Backend:** Supabase (auth via phone/OTP, realtime for live voting, DB for groups/plans)
-- **AI:** Claude API (aggregation + conflict resolution + spot suggestions)
+- **AI:** LLM API (aggregation + conflict resolution + spot suggestions)
 - **Maps/Places:** MapKit + Google Places API
 - **Payments (Big Trip):** Stripe
 - **Push:** APNs via Supabase Edge Functions or a simple backend

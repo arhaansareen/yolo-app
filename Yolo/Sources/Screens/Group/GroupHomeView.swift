@@ -51,7 +51,7 @@ struct GroupHomeView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .frame(height: 220)
+            .frame(height: 260)
             .ignoresSafeArea(edges: .top)
 
             VStack(spacing: YoloSpacing.sm) {
@@ -74,7 +74,7 @@ struct GroupHomeView: View {
 
                 VStack(spacing: 8) {
                     Text(group.name)
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.system(size: 32, weight: .black))
                         .foregroundStyle(Color.white)
                         .multilineTextAlignment(.center)
                     StackedAvatars(members: group.members, size: 32)
@@ -127,6 +127,9 @@ struct GroupHomeView: View {
     private var availabilityRow: some View {
         Button { showAvailability = true } label: {
             HStack(spacing: 10) {
+                Circle()
+                    .fill(Color.yoloGold)
+                    .frame(width: 6, height: 6)
                 Image(systemName: "calendar")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(Color.yoloGold)
@@ -206,7 +209,7 @@ private struct StatBlock: View {
     var body: some View {
         VStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(size: 13))
+                .font(.system(size: 16))
                 .foregroundStyle(tint)
             Text(value)
                 .font(.system(size: 20, weight: .bold))
@@ -238,13 +241,24 @@ private struct AccountabilityRow: View {
 
             AvatarView(member: member, size: 32)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(member.name)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Color.white)
                 Text(member.title.rawValue)
                     .font(.system(size: 11))
                     .foregroundStyle(Color.yoloTextSecondary)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.yoloBorder)
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(rateColor)
+                            .frame(width: geo.size.width * member.showUpRate)
+                    }
+                }
+                .frame(height: 3)
+                .frame(maxWidth: 120)
             }
 
             Spacer()

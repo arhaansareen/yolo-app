@@ -1,6 +1,6 @@
-# CLAUDE.md
+# DEV.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Developer guide for the Yolo iOS project.
 
 ## Build & Run
 
@@ -32,7 +32,6 @@ After any structural changes (new files, new targets), re-run `xcodegen generate
 - `AvatarView` / `StackedAvatars` / `MemberResponseDot` — member avatar rendering
 - `YoloButton` — primary/secondary/ghost/destructive variants
 - `StatusPill` / `ActivityPill` — group status and activity type tags
-- `YoloTextField` — defined in `ProfileSetupView.swift` (not in Components/ — move it if reusing elsewhere)
 
 **Models** in `Sources/Models/Models.swift` — all structs with mock data as static extensions. No persistence yet; everything is in-memory.
 

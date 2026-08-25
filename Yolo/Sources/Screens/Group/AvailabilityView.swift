@@ -62,7 +62,7 @@ struct AvailabilityView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("who's free this week")
-                .font(.system(size: 26, weight: .bold))
+                .font(.system(size: 28, weight: .black))
                 .foregroundStyle(Color.white)
             Text("based on \(group.members.count) members")
                 .font(.system(size: 14))
@@ -99,7 +99,7 @@ struct AvailabilityView: View {
                             RoundedRectangle(cornerRadius: 4, style: .continuous)
                                 .fill(heatColor(fraction: fraction))
                                 .frame(maxWidth: .infinity)
-                                .frame(height: 36)
+                                .frame(height: 40)
                                 .overlay(
                                     Text("\(count)")
                                         .font(.system(size: 11, weight: .bold))
@@ -198,6 +198,7 @@ private struct BestTimeRow: View {
                 Circle()
                     .fill(rank == 1 ? Color.yoloGold : Color.yoloSurface2)
                     .frame(width: 28, height: 28)
+                    .shadow(color: rank == 1 ? Color.yoloGold.opacity(0.4) : Color.clear, radius: 6)
                 Text("\(rank)")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(rank == 1 ? Color.black : Color.yoloTextSecondary)
