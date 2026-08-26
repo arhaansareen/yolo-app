@@ -242,29 +242,131 @@ struct ActivityTabView: View {
 
 struct ProfileTabView: View {
     @Environment(AppState.self) private var appState
+    @State private var freeSlots: Set<String> = []
+
+    private let days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+    private let slots = ["morning", "afternoon", "evening"]
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: YoloSpacing.lg) {
+
+                // Avatar header
                 VStack(spacing: YoloSpacing.sm) {
-                    AvatarView(member: appState.currentUser, size: 72)
-                    Text(appState.currentUser.name)
+                    ZStack {
+                        Circle()
+                            .fill(Color.yoloGold)
+                            .frame(width: 52, height: 52)
+                        Text("A")
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundStyle(.black)
+                    }
+                    Text("arh")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(Color.white)
-                    Text(appState.currentUser.title.rawValue)
+                    Text("the anchor")
                         .font(.system(size: 13))
                         .foregroundStyle(Color.yoloGold)
                 }
-                .padding(.top, 80)
+                .padding(.top, 72)
 
+                // 3 stat cards
                 HStack(spacing: YoloSpacing.sm) {
-                    StatTile(value: "\(appState.groups.count)", label: "groups")
-                    StatTile(value: "\(appState.groups.reduce(0) { $0 + $1.linkCount })", label: "total links")
-                    StatTile(value: appState.currentUser.showUpRate.asPercent(), label: "show-up rate")
+                    StatTile(value: "14", label: "links")
+                    StatTile(value: "92%", label: "show-up")
+                    StatTile(value: "3", label: "groups")
                 }
                 .padding(.horizontal, YoloSpacing.md)
 
-                Color.clear.frame(height: 80)
+                // 7x3 availability heatmap
+                VStack(alignment: .leading, spacing: YoloSpacing.sm) {
+                    SectionHeader(title: "availability")
+
+                    VStack(spacing: 6) {
+                        // day headers
+                        HStack(spacing: 4) {
+                            Color.clear.frame(width: 72)
+                            ForEach(days, id: \.self) { day in
+                                Text(day)
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundStyle(Color.yoloTextTertiary)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+
+                        // rows per time slot
+                        ForEach(slots, id: \.self) { slot in
+                            HStack(spacing: 4) {
+                                Text(slot)
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundStyle(Color.yoloTextSecondary)
+                                    .frame(width: 72, alignment: .leading)
+                                ForEach(days, id: \.self) { day in
+                                    let key = "\(day)-\(slot)"
+                                    let isFree = freeSlots.contains(key)
+                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                        .fill(isFree ? Color.yoloGold : Color.yoloSurface2)
+                                        .frame(height: 28)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                .strokeBorder(isFree ? Color.yoloGold.opacity(0.4) : Color.yoloBorder, lineWidth: 0.5)
+                                        )
+                                        .onTapGesture {
+                                            withAnimation(YoloSpring.snappy) {
+                                                if freeSlots.contains(key) {
+                                                    freeSlots.remove(key)
+                                                } else {
+                                                    freeSlots.insert(key)
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    .padding(YoloSpacing.md)
+                    .background(Color.yoloSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous)
+                            .strokeBorder(Color.yoloBorder, lineWidth: 0.5)
+                    )
+                }
+                .padding(.horizontal, YoloSpacing.md)
+
+                // Settings rows
+                VStack(spacing: 0) {
+                    ForEach(["notifications", "privacy", "connected accounts"], id: \.self) { row in
+                        VStack(spacing: 0) {
+                            HStack {
+                                Text(row)
+                                    .font(.system(size: 15, weight: .medium))
+                                    .foregroundStyle(Color.white)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(Color.yoloTextTertiary)
+                            }
+                            .padding(.horizontal, YoloSpacing.md)
+                            .padding(.vertical, 14)
+
+                            if row != "connected accounts" {
+                                Divider()
+                                    .background(Color.yoloBorder)
+                                    .padding(.leading, YoloSpacing.md)
+                            }
+                        }
+                    }
+                }
+                .background(Color.yoloSurface)
+                .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous)
+                        .strokeBorder(Color.yoloBorder, lineWidth: 0.5)
+                )
+                .padding(.horizontal, YoloSpacing.md)
+
+                Color.clear.frame(height: 100)
             }
         }
         .background(Color.black)

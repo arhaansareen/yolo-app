@@ -15,6 +15,7 @@ struct FinalPollView: View {
     private var noCount:      Int { votes.values.filter { $0 == .no }.count }
     private var totalVoted:   Int { votes.count }
     private var isLocked:    Bool { Double(yesCount) / Double(max(group.members.count, 1)) >= 0.8 }
+    private var yesPct:       Int { totalVoted == 0 ? 0 : Int(Double(yesCount) / Double(totalVoted) * 100) }
 
     var body: some View {
         ZStack {
@@ -104,9 +105,15 @@ struct FinalPollView: View {
 
     private var voteSection: some View {
         VStack(alignment: .leading, spacing: YoloSpacing.sm) {
-            Text("are you in?")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(Color.white)
+            HStack {
+                Text("are you in?")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(Color.white)
+                Spacer()
+                Text("live results · \(yesPct)% yes")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color.yoloGold)
+            }
 
             HStack(spacing: YoloSpacing.sm) {
                 VoteButton(label: "Yes", sublabel: "i'll be there", color: .yoloGreen,
@@ -159,14 +166,22 @@ struct FinalPollView: View {
     }
 
     private var bottomBar: some View {
-        VStack {
-            YoloButton(title: isLocked ? "lock it in" : "lock in anyway",
-                       style: isLocked ? .primary : .secondary) {
-                navigate = true
+        VStack(spacing: YoloSpacing.sm) {
+            if myVote == .yes {
+                YoloButton(title: "we're locked in →", style: .primary) {
+                    navigate = true
+                }
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
+            } else {
+                YoloButton(title: isLocked ? "lock it in" : "lock in anyway",
+                           style: isLocked ? .primary : .secondary) {
+                    navigate = true
+                }
             }
-            .padding(.horizontal, YoloSpacing.md)
-            .padding(.bottom, 36)
         }
+        .padding(.horizontal, YoloSpacing.md)
+        .padding(.bottom, 36)
+        .animation(YoloSpring.smooth, value: myVote == .yes)
         .background(
             LinearGradient(colors: [Color.black, Color.black.opacity(0)], startPoint: .bottom, endPoint: .top)
                 .frame(height: 100).ignoresSafeArea(), alignment: .bottom

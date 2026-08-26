@@ -96,7 +96,7 @@ struct WaitingRoomView: View {
             HStack(spacing: 6) {
                 Image(systemName: "bell.badge")
                     .font(.system(size: 13))
-                Text("nudge the stragglers")
+                Text("poke the slackers")
                     .font(.system(size: 14, weight: .medium))
             }
             .foregroundStyle(Color.yoloTextSecondary)
@@ -112,10 +112,12 @@ struct WaitingRoomView: View {
     }
 
     private var bottomBar: some View {
-        YoloButton(
-            title: allResponded ? "see what AI picked" : "see early results",
-            style: allResponded ? .primary : .secondary
-        ) { navigate = true }
+        Group {
+            if allResponded {
+                YoloButton(title: "see suggestions", style: .primary) { navigate = true }
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+            }
+        }
         .padding(.bottom, 48)
         .animation(YoloSpring.smooth, value: allResponded)
     }

@@ -13,16 +13,16 @@ struct AISuggestionView: View {
     private let suggestions: [AISuggestion] = [
         AISuggestion(id: UUID(), title: "dinner + bowling",
                      description: "start with food, end at the lanes",
-                     why: "4/5 wanted food, 3/5 were down for an activity — this satisfies both.",
-                     estimatedCostPerPerson: "$35–55", vibes: ["casual", "competitive", "2–3 hrs"], venue: nil),
-        AISuggestion(id: UUID(), title: "rooftop bar",
-                     description: "drinks with a view, everyone within 20 min",
-                     why: "3/5 picked going out, mid budget across the board, and the spot is central.",
-                     estimatedCostPerPerson: "$25–40", vibes: ["social", "low effort", "1–2 hrs"], venue: nil),
-        AISuggestion(id: UUID(), title: "hosted night in",
-                     description: "someone hosts. snacks, drinks, good time.",
-                     why: "2 people flagged low effort — this is the path of least resistance.",
-                     estimatedCostPerPerson: "$10–20", vibes: ["chill", "flexible"], venue: nil),
+                     why: "half the group wanted food, half wanted an activity, so we split the difference.",
+                     estimatedCostPerPerson: "$30", vibes: ["casual", "indoor", "groups"], venue: nil),
+        AISuggestion(id: UUID(), title: "sunset patio drinks",
+                     description: "drinks with a view, outdoors",
+                     why: "most of you said low effort, high vibes this week.",
+                     estimatedCostPerPerson: "$25", vibes: ["chill", "outdoor", "day-drink"], venue: nil),
+        AISuggestion(id: UUID(), title: "movie + late-night diner",
+                     description: "classic double feature night",
+                     why: "two of you can't do $50+ right now, so this stays cheap.",
+                     estimatedCostPerPerson: "$18", vibes: ["budget", "indoor", "chill"], venue: nil),
     ]
 
     var body: some View {

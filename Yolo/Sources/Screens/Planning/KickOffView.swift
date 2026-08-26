@@ -92,12 +92,15 @@ struct KickOffView: View {
         .padding(.bottom, YoloSpacing.md)
     }
 
+    private var bothSelected: Bool { selectedActivity != nil && selectedTimeframe != nil }
+
     private var bottomBar: some View {
         VStack {
-            YoloButton(title: "send to the group", style: selectedActivity != nil ? .primary : .ghost) {
+            YoloButton(title: "send it", style: bothSelected ? .primary : .ghost) {
                 navigate = true
             }
-            .disabled(selectedActivity == nil)
+            .disabled(!bothSelected)
+            .opacity(bothSelected ? 1 : 0.4)
             .shadow(color: Color.yoloGold.opacity(0.25), radius: 12, y: 4)
             .padding(.horizontal, YoloSpacing.md)
             .padding(.bottom, 36)

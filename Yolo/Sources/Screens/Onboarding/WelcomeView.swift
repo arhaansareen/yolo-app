@@ -4,11 +4,10 @@ struct WelcomeView: View {
     @State private var currentPage = 0
     @State private var navigateToAuth = false
 
-    private let slides: [(headline: String, sub: String)] = [
-        ("the gc talks big.", "yolo makes it real."),
-        ("everyone votes.", "ai picks. you show up."),
-        ("no more chasing\npeople for e-transfers.", "we handle the logistics."),
-        ("who flaked?\nwho always pulls up?", "now you know."),
+    private let slides: [String] = [
+        "the gc talks big. yolo makes it real.",
+        "everyone votes. ai picks. you show up.",
+        "no more chasing people for e-transfers.",
     ]
 
     var body: some View {
@@ -21,7 +20,7 @@ struct WelcomeView: View {
 
                     TabView(selection: $currentPage) {
                         ForEach(Array(slides.enumerated()), id: \.offset) { idx, slide in
-                            SlideCard(headline: slide.headline, sub: slide.sub)
+                            SlideCard(text: slide)
                                 .tag(idx)
                         }
                     }
@@ -33,10 +32,17 @@ struct WelcomeView: View {
                     VStack(spacing: YoloSpacing.lg) {
                         HStack(spacing: 6) {
                             ForEach(0..<slides.count, id: \.self) { i in
-                                Capsule()
-                                    .fill(i == currentPage ? Color.yoloGold : Color.yoloBorder)
-                                    .frame(width: i == currentPage ? 20 : 6, height: 6)
-                                    .animation(YoloSpring.snappy, value: currentPage)
+                                if i == currentPage {
+                                    Capsule()
+                                        .fill(Color.yoloGold)
+                                        .frame(width: 18, height: 8)
+                                        .animation(YoloSpring.snappy, value: currentPage)
+                                } else {
+                                    Circle()
+                                        .fill(Color.yoloTextTertiary)
+                                        .frame(width: 6, height: 6)
+                                        .animation(YoloSpring.snappy, value: currentPage)
+                                }
                             }
                         }
 
@@ -65,20 +71,14 @@ struct WelcomeView: View {
 }
 
 private struct SlideCard: View {
-    let headline: String
-    let sub: String
+    let text: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: YoloSpacing.md) {
-            Text(headline)
+            Text(text)
                 .font(.system(size: 36, weight: .bold))
                 .foregroundStyle(Color.white)
                 .lineSpacing(4)
-                .multilineTextAlignment(.leading)
-
-            Text(sub)
-                .font(.system(size: 18))
-                .foregroundStyle(Color.yoloTextSecondary)
                 .multilineTextAlignment(.leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

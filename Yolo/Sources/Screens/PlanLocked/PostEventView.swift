@@ -6,6 +6,7 @@ struct PostEventView: View {
     @State private var showPhotoAlbum = false
     @State private var selectedRating: Int? = nil
     @State private var showRatingConfirm = false
+    @State private var attendance: [UUID: Bool?] = [:]  // true=showed, false=flaked, nil=undecided
 
     var body: some View {
         ZStack {
@@ -175,17 +176,47 @@ struct PostEventView: View {
             VStack(spacing: 0) {
                 ForEach(Array(group.members.enumerated()), id: \.element.id) { idx, member in
                     if idx > 0 { Divider().background(Color.yoloBorder).padding(.leading, 56) }
-                    let showed = member.showUpRate > 0.5
+                    let memberStatus = attendance[member.id] ?? nil
                     HStack(spacing: YoloSpacing.sm) {
                         AvatarView(member: member, size: 32)
-                            .opacity(showed ? 1.0 : 0.35)
+                            .opacity(memberStatus == false ? 0.35 : 1.0)
                         Text(member.name)
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(showed ? Color.white : Color.yoloTextTertiary)
+                            .foregroundStyle(memberStatus == false ? Color.yoloTextTertiary : Color.white)
                         Spacer()
-                        Image(systemName: showed ? "checkmark.circle.fill" : "xmark.circle")
-                            .font(.system(size: 16))
-                            .foregroundStyle(showed ? Color.yoloGreen : Color.yoloRed.opacity(0.5))
+                        HStack(spacing: 6) {
+                            Button {
+                                withAnimation(YoloSpring.bouncy) {
+                                    attendance[member.id] = attendance[member.id] == true ? nil : true
+                                }
+                            } label: {
+                                Text("showed")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(memberStatus == true ? Color.yoloGreen : Color.yoloTextTertiary)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(memberStatus == true ? Color.yoloGreen.opacity(0.15) : Color.yoloSurface2)
+                                    .clipShape(Capsule())
+                                    .overlay(Capsule().strokeBorder(memberStatus == true ? Color.yoloGreen.opacity(0.5) : Color.yoloBorder, lineWidth: 0.5))
+                            }
+                            .buttonStyle(PressEffectButtonStyle())
+
+                            Button {
+                                withAnimation(YoloSpring.bouncy) {
+                                    attendance[member.id] = attendance[member.id] == false ? nil : false
+                                }
+                            } label: {
+                                Text("flaked")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(memberStatus == false ? Color.yoloRed : Color.yoloTextTertiary)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(memberStatus == false ? Color.yoloRed.opacity(0.15) : Color.yoloSurface2)
+                                    .clipShape(Capsule())
+                                    .overlay(Capsule().strokeBorder(memberStatus == false ? Color.yoloRed.opacity(0.5) : Color.yoloBorder, lineWidth: 0.5))
+                            }
+                            .buttonStyle(PressEffectButtonStyle())
+                        }
                     }
                     .padding(.horizontal, YoloSpacing.md)
                     .padding(.vertical, 11)
@@ -196,28 +227,8 @@ struct PostEventView: View {
     }
 
     private var nextPlanCTA: some View {
-        VStack(spacing: YoloSpacing.sm) {
-            Text("don't let the streak die")
-                .font(.system(size: 13))
-                .foregroundStyle(Color.yoloTextSecondary)
-
-            Button { dismiss() } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "bolt.fill")
-                    Text("plan the next one")
-                        .font(.system(size: 16, weight: .bold))
-                }
-                .foregroundStyle(.black)
-                .frame(maxWidth: .infinity)
-                .frame(height: 54)
-                .background(
-                    LinearGradient(colors: [Color.yoloGoldLight, Color.yoloGold],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
-                .shadow(color: Color.yoloGold.opacity(0.25), radius: 12, y: 4)
-            }
-            .buttonStyle(GoldPressButtonStyle())
+        YoloButton(title: "save recap", style: .primary) {
+            dismiss()
         }
     }
 }

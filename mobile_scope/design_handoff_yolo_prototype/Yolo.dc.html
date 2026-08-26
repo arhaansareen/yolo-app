@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#0b0b0c; }
+  * { -webkit-tap-highlight-color: transparent; }
+  input::placeholder { color:#4A4A4A; }
+  input { outline:none; font-family:-apple-system,system-ui,sans-serif; }
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;background:radial-gradient(circle at 50% 20%,#151515,#0b0b0c 70%);">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402,874">
+<div style="width:100%;height:100%;overflow:auto;background:#000;color:#fff;font-family:-apple-system,system-ui,sans-serif;">
+
+<sc-if value="{{ isSplash }}" hint-placeholder-val="{{ true }}">
+  <div onClick="{{ goWelcome }}" style="min-height:100%;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:52px;color:#C9A84C;letter-spacing:0.5px;">yolo.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isWelcome }}">
+  <div style="min-height:100%;background:#000;padding:54px 24px 40px;box-sizing:border-box;display:flex;flex-direction:column;">
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:22px;color:#C9A84C;text-align:center;margin-bottom:48px;">yolo.</div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 8px;">
+      <div style="font-size:28px;font-weight:600;line-height:1.35;color:#fff;">{{ onboardCard.text }}</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:28px;">
+      <sc-for list="{{ onboardDots }}" as="d" hint-placeholder-count="3">
+        <div style="width:{{ d.size }};height:6px;border-radius:3px;background:{{ d.color }};"></div>
+      </sc-for>
+    </div>
+    <button onClick="{{ nextOnboard }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;">{{ onboardCta }}</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isPhoneAuth }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px;">
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:20px;color:#C9A84C;">yolo.</div>
+    <div style="font-size:24px;font-weight:700;">sign in</div>
+    <input value="{{ phoneValue }}" onChange="{{ onPhoneChange }}" placeholder="phone number" style="height:50px;border-radius:12px;background:#1C1C1C;border:1px solid #2A2A2A;color:#fff;font-size:15px;padding:0 14px;width:100%;box-sizing:border-box;" />
+    <button onClick="{{ submitPhone }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;">continue</button>
+    <button onClick="{{ submitPhone }}" style="height:54px;border-radius:16px;background:transparent;color:#8A8A8A;font-size:15px;font-weight:500;border:none;cursor:pointer;width:100%;">continue with apple</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isProfileSetup }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;">
+    <div style="font-size:24px;font-weight:700;">set up your profile</div>
+    <div style="align-self:center;width:88px;height:88px;border-radius:44px;border:1.5px dashed #2A2A2A;display:flex;align-items:center;justify-content:center;color:#4A4A4A;font-size:28px;">+</div>
+    <input value="{{ nameValue }}" onChange="{{ onNameChange }}" placeholder="display name" style="height:50px;border-radius:12px;background:#1C1C1C;border:1px solid #2A2A2A;color:#fff;font-size:15px;padding:0 14px;width:100%;box-sizing:border-box;" />
+    <input value="{{ cityValue }}" onChange="{{ onCityChange }}" placeholder="your city" style="height:50px;border-radius:12px;background:#1C1C1C;border:1px solid #2A2A2A;color:#fff;font-size:15px;padding:0 14px;width:100%;box-sizing:border-box;" />
+    <button onClick="{{ submitProfile }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;margin-top:8px;">done</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isHome }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 100px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ goProfile }}" style="width:36px;height:36px;border-radius:18px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.5);display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:14px;font-weight:700;cursor:pointer;">{{ currentUser.initial }}</div>
+      <div style="flex:1;font-size:22px;font-weight:700;">your groups</div>
+      <div style="font-size:12px;color:#4A4A4A;">alerts</div>
+    </div>
+
+    <sc-if value="{{ hasIdleBanner }}">
+      <div onClick="{{ openIdleGroup }}" style="border:1.5px dashed rgba(201,168,76,0.4);border-radius:16px;padding:14px 16px;cursor:pointer;">
+        <div style="font-size:13px;color:#C9A84C;font-weight:600;">{{ idleGroupName }} hasn't linked in a while</div>
+        <div style="font-size:12px;color:#8A8A8A;margin-top:2px;">nudge them?</div>
+      </div>
+    </sc-if>
+
+    <sc-for list="{{ groupsList }}" as="g" hint-placeholder-count="3">
+      <div onClick="{{ g.onOpen }}" style="background:#111;border:1px solid #2A2A2A;border-radius:16px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:16px;font-weight:700;">{{ g.name }}</div>
+          <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:100px;background:{{ g.statusBg }};">
+            <div style="width:6px;height:6px;border-radius:3px;background:{{ g.statusColor }};"></div>
+            <div style="font-size:12px;font-weight:600;color:{{ g.statusColor }};">{{ g.statusLabel }}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="display:flex;">
+            <sc-for list="{{ g.avatars }}" as="a" hint-placeholder-count="3">
+              <div style="width:28px;height:28px;border-radius:14px;background:{{ a.bg }};border:1.5px solid #000;margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:{{ a.fg }};">{{ a.initial }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:12px;color:#8A8A8A;flex:1;">{{ g.lastActivityText }}</div>
+          <div style="font-size:12px;color:#C9A84C;font-weight:600;">{{ g.linkCount }} links</div>
+        </div>
+      </div>
+    </sc-for>
+
+    <div onClick="{{ goCreateGroup }}" style="position:fixed;right:24px;bottom:104px;height:48px;padding:0 20px;border-radius:24px;background:#C9A84C;color:#000;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.4);">+ new group</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isCreateGroup }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;flex:1;">what do you call yourselves?</div>
+    </div>
+    <input value="{{ newGroupName }}" onChange="{{ onGroupNameChange }}" placeholder="crew name" style="height:50px;border-radius:12px;background:#1C1C1C;border:1px solid #2A2A2A;color:#fff;font-size:15px;padding:0 14px;width:100%;box-sizing:border-box;" />
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <sc-for list="{{ suggestedNames }}" as="s" hint-placeholder-count="3">
+        <div onClick="{{ s.onPick }}" style="padding:8px 14px;border-radius:100px;font-size:13px;background:#1C1C1C;color:#8A8A8A;border:0.5px solid #2A2A2A;cursor:pointer;">{{ s.name }}</div>
+      </sc-for>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">add members</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <sc-for list="{{ memberCandidates }}" as="m" hint-placeholder-count="4">
+          <div onClick="{{ m.onToggle }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;opacity:{{ m.opacity }};">
+            <div style="width:44px;height:44px;border-radius:22px;background:{{ m.bg }};border:1.5px solid {{ m.border }};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:{{ m.fg }};">{{ m.initial }}</div>
+            <div style="font-size:11px;color:#8A8A8A;">{{ m.name }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">group vibe</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <sc-for list="{{ vibeOptions }}" as="v" hint-placeholder-count="4">
+          <div onClick="{{ v.onPick }}" style="padding:9px 16px;border-radius:100px;font-size:14px;background:{{ v.bg }};color:{{ v.fg }};border:{{ v.borderW }} solid {{ v.border }};cursor:pointer;">{{ v.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+
+    <button onClick="{{ createGroup }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;margin-top:8px;">create group</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isGroupHome }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="flex:1;">
+        <div style="font-size:20px;font-weight:700;">{{ selectedGroup.name }}</div>
+        <div style="font-size:12px;color:#8A8A8A;">{{ selectedGroup.memberCountText }}</div>
+      </div>
+    </div>
+
+    <button onClick="{{ startPlan }}" style="height:58px;border-radius:16px;background:#C9A84C;color:#000;font-size:17px;font-weight:700;border:none;cursor:pointer;width:100%;">start a plan</button>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">recent activity</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <sc-for list="{{ selectedGroup.feed }}" as="f" hint-placeholder-count="3">
+          <div style="background:#111;border:1px solid #2A2A2A;border-radius:12px;padding:12px 14px;font-size:13px;color:#ccc;">{{ f }}</div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background:#111;border:1px solid rgba(201,168,76,0.22);border-radius:16px;padding:16px;text-align:center;">
+      <div style="font-size:13px;color:#8A8A8A;">you've linked up</div>
+      <div style="font-size:26px;font-weight:700;color:#C9A84C;">{{ selectedGroup.linkCount }} times</div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">accountability</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <sc-for list="{{ selectedGroup.leaderboard }}" as="l" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #2A2A2A;border-radius:12px;padding:10px 12px;">
+            <div style="width:30px;height:30px;border-radius:15px;background:{{ l.bg }};border:1px solid {{ l.border }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:{{ l.fg }};">{{ l.initial }}</div>
+            <div style="flex:1;font-size:13px;font-weight:600;">{{ l.name }} · {{ l.title }}</div>
+            <div style="font-size:12px;color:{{ l.rateColor }};font-weight:600;">{{ l.rateText }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <button onClick="{{ goProfileAvailability }}" style="height:48px;border-radius:16px;background:transparent;color:#8A8A8A;font-size:14px;font-weight:500;border:1px solid #2A2A2A;cursor:pointer;width:100%;">check availability</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isKickoff }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">what are we tryna do?</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <sc-for list="{{ activityTiles }}" as="a" hint-placeholder-count="6">
+        <div onClick="{{ a.onSelect }}" style="height:76px;border-radius:14px;background:{{ a.bg }};border:{{ a.borderW }} solid {{ a.border }};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:{{ a.fg }};cursor:pointer;">{{ a.label }}</div>
+      </sc-for>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">when</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <sc-for list="{{ timeframeOptions }}" as="t" hint-placeholder-count="4">
+          <div onClick="{{ t.onSelect }}" style="padding:9px 16px;border-radius:100px;font-size:14px;background:{{ t.bg }};color:{{ t.fg }};border:{{ t.borderW }} solid {{ t.border }};cursor:pointer;">{{ t.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <button onClick="{{ sendKickoff }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;opacity:{{ kickoffCanSendOpacity }};">send it</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isSurvey }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">what are you feeling?</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <sc-for list="{{ surveyTiles }}" as="a" hint-placeholder-count="6">
+        <div onClick="{{ a.onToggle }}" style="padding:9px 16px;border-radius:100px;font-size:14px;background:{{ a.bg }};color:{{ a.fg }};border:{{ a.borderW }} solid {{ a.border }};cursor:pointer;">{{ a.label }}</div>
+      </sc-for>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">budget</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <sc-for list="{{ budgetOptions }}" as="b" hint-placeholder-count="4">
+          <div onClick="{{ b.onSelect }}" style="padding:9px 16px;border-radius:100px;font-size:14px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.borderW }} solid {{ b.border }};cursor:pointer;">{{ b.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">when are you free</div>
+      <div style="display:flex;gap:6px;">
+        <sc-for list="{{ dayOptions }}" as="d" hint-placeholder-count="7">
+          <div onClick="{{ d.onToggle }}" style="flex:1;height:44px;border-radius:10px;background:{{ d.bg }};border:{{ d.borderW }} solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:{{ d.fg }};cursor:pointer;">{{ d.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">effort you can give</div>
+      <div style="display:flex;gap:8px;">
+        <sc-for list="{{ effortOptions }}" as="e" hint-placeholder-count="3">
+          <div onClick="{{ e.onSelect }}" style="flex:1;height:44px;border-radius:10px;background:{{ e.bg }};border:{{ e.borderW }} solid {{ e.border }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:{{ e.fg }};cursor:pointer;">{{ e.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <button onClick="{{ submitSurvey }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;">submit</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isWaitingRoom }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">waiting on the crew</div>
+    </div>
+    <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:20px;padding:12px 0;">
+      <sc-for list="{{ waitingMembers }}" as="m" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="position:relative;width:52px;height:52px;">
+            <div style="width:52px;height:52px;border-radius:26px;background:{{ m.bg }};border:1.5px solid {{ m.border }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:{{ m.fg }};opacity:{{ m.opacity }};">{{ m.initial }}</div>
+            <sc-if value="{{ m.responded }}">
+              <div style="position:absolute;right:-2px;bottom:-2px;width:17px;height:17px;border-radius:9px;background:#30D158;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#000;">✓</div>
+            </sc-if>
+          </div>
+          <div style="font-size:11px;font-weight:500;color:{{ m.nameColor }};">{{ m.name }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#4A4A4A;">answers due by fri 8pm</div>
+    <button onClick="{{ nudge }}" style="height:48px;border-radius:16px;background:transparent;color:#C9A84C;font-size:14px;font-weight:600;border:1px solid rgba(201,168,76,0.35);cursor:pointer;width:100%;">poke the slackers</button>
+    <sc-if value="{{ allResponded }}">
+      <button onClick="{{ goAiSuggestion }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;">see suggestions</button>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isAiSuggestion }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">yolo picked 3</div>
+    </div>
+    <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
+      <div onClick="{{ s.onSelect }}" style="background:#111;border:{{ s.borderW }} solid {{ s.border }};border-radius:16px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="font-size:16px;font-weight:700;">{{ s.title }}</div>
+          <div style="font-size:13px;color:#C9A84C;font-weight:600;">{{ s.cost }}</div>
+        </div>
+        <div style="font-size:13px;color:#8A8A8A;line-height:1.45;">{{ s.why }}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;">
+          <sc-for list="{{ s.tags }}" as="tag" hint-placeholder-count="3">
+            <div style="font-size:11px;padding:4px 9px;border-radius:100px;background:#1C1C1C;color:#8A8A8A;">{{ tag }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+    <button onClick="{{ lockSuggestion }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;opacity:{{ lockOpacity }};">lock this in</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isFinalPoll }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">you in?</div>
+    </div>
+    <div style="background:#111;border:1px solid rgba(201,168,76,0.22);border-radius:16px;padding:16px;">
+      <div style="font-size:16px;font-weight:700;">{{ chosenPlan.title }}</div>
+      <div style="font-size:13px;color:#8A8A8A;margin-top:4px;">{{ chosenPlan.dayText }} · {{ chosenPlan.cost }}</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <sc-for list="{{ voteOptions }}" as="v" hint-placeholder-count="3">
+        <div onClick="{{ v.onSelect }}" style="flex:1;height:48px;border-radius:12px;background:{{ v.bg }};border:{{ v.borderW }} solid {{ v.border }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:{{ v.fg }};cursor:pointer;">{{ v.label }}</div>
+      </sc-for>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">live results · {{ yesPercentText }} yes</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <sc-for list="{{ pollRoster }}" as="p" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #2A2A2A;border-radius:12px;padding:10px 12px;">
+            <div style="width:28px;height:28px;border-radius:14px;background:{{ p.bg }};border:1px solid {{ p.border }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:{{ p.fg }};">{{ p.initial }}</div>
+            <div style="flex:1;font-size:13px;font-weight:600;">{{ p.name }}</div>
+            <div style="font-size:12px;font-weight:600;color:{{ p.voteColor }};">{{ p.voteLabel }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <sc-if value="{{ pollThresholdMet }}">
+      <button onClick="{{ lockPoll }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;">we're locked in →</button>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isPlanLocked }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;align-items:center;text-align:center;">
+    <div style="width:64px;height:64px;border-radius:32px;background:rgba(201,168,76,0.12);border:1.5px solid #C9A84C;display:flex;align-items:center;justify-content:center;font-size:26px;color:#C9A84C;margin-top:12px;">✓</div>
+    <div style="font-size:24px;font-weight:700;">it's official.</div>
+    <div style="background:#111;border:1px solid rgba(201,168,76,0.22);border-radius:16px;padding:18px;width:100%;box-sizing:border-box;text-align:left;">
+      <div style="font-size:16px;font-weight:700;">{{ chosenPlan.title }}</div>
+      <div style="font-size:13px;color:#8A8A8A;margin-top:4px;">{{ chosenPlan.dayText }}</div>
+      <div style="display:flex;margin-top:12px;">
+        <sc-for list="{{ lockedAvatars }}" as="a" hint-placeholder-count="5">
+          <div style="width:28px;height:28px;border-radius:14px;background:{{ a.bg }};border:1.5px solid #111;margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:{{ a.fg }};">{{ a.initial }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+      <button style="height:50px;border-radius:14px;background:transparent;color:#8A8A8A;font-size:14px;font-weight:500;border:1px solid #2A2A2A;cursor:pointer;width:100%;">add to calendar</button>
+      <button style="height:50px;border-radius:14px;background:transparent;color:#C9A84C;font-size:14px;font-weight:600;border:1px solid rgba(201,168,76,0.35);cursor:pointer;width:100%;">share plan card</button>
+      <button style="height:50px;border-radius:14px;background:transparent;color:#8A8A8A;font-size:14px;font-weight:500;border:1px solid #2A2A2A;cursor:pointer;width:100%;">open group chat</button>
+    </div>
+    <div onClick="{{ goPostEvent }}" style="font-size:13px;color:#4A4A4A;margin-top:8px;cursor:pointer;">plan already happened? wrap it up →</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isPostEvent }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">how'd it go?</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">roll call</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <sc-for list="{{ rollCallRoster }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #2A2A2A;border-radius:12px;padding:10px 12px;">
+            <div style="width:28px;height:28px;border-radius:14px;background:{{ r.bg }};border:1px solid {{ r.border }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:{{ r.fg }};">{{ r.initial }}</div>
+            <div style="flex:1;font-size:13px;font-weight:600;">{{ r.name }}</div>
+            <div onClick="{{ r.onShowed }}" style="font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px;background:{{ r.showedBg }};color:{{ r.showedFg }};cursor:pointer;">showed</div>
+            <div onClick="{{ r.onFlaked }}" style="font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px;background:{{ r.flakedBg }};color:{{ r.flakedFg }};cursor:pointer;">flaked</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">rate it</div>
+      <div style="display:flex;gap:6px;font-size:30px;">
+        <sc-for list="{{ starRow }}" as="star" hint-placeholder-count="5">
+          <div onClick="{{ star.onClick }}" style="cursor:pointer;color:{{ star.color }};">{{ star.glyph }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">photos</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <sc-for list="{{ photoSlots }}" as="p" hint-placeholder-count="4">
+          <div style="height:90px;border-radius:12px;background:repeating-linear-gradient(45deg,#1C1C1C,#1C1C1C 10px,#151515 10px,#151515 20px);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-size:11px;color:#4A4A4A;">add photo</div>
+        </sc-for>
+      </div>
+    </div>
+    <button onClick="{{ savePostEvent }}" style="height:54px;border-radius:16px;background:#C9A84C;color:#000;font-size:16px;font-weight:600;border:none;cursor:pointer;width:100%;">save recap</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isProfile }}">
+  <div style="min-height:100%;background:#000;padding:54px 20px 40px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div onClick="{{ back }}" style="width:32px;height:32px;border-radius:16px;background:#1C1C1C;border:1px solid #2A2A2A;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:18px;cursor:pointer;">‹</div>
+      <div style="font-size:20px;font-weight:700;">profile</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:72px;height:72px;border-radius:36px;background:rgba(201,168,76,0.15);border:1.5px solid rgba(201,168,76,0.5);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#C9A84C;">{{ currentUser.initial }}</div>
+      <div style="font-size:18px;font-weight:700;">{{ currentUser.name }}</div>
+      <div style="font-size:12px;color:#8A8A8A;">{{ currentUser.title }}</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;background:#111;border:1px solid #2A2A2A;border-radius:14px;padding:14px;text-align:center;">
+        <div style="font-size:20px;font-weight:700;color:#C9A84C;">{{ currentUser.totalLinks }}</div>
+        <div style="font-size:11px;color:#8A8A8A;margin-top:2px;">total links</div>
+      </div>
+      <div style="flex:1;background:#111;border:1px solid #2A2A2A;border-radius:14px;padding:14px;text-align:center;">
+        <div style="font-size:20px;font-weight:700;color:#C9A84C;">{{ currentUser.showUpText }}</div>
+        <div style="font-size:11px;color:#8A8A8A;margin-top:2px;">show-up rate</div>
+      </div>
+      <div style="flex:1;background:#111;border:1px solid #2A2A2A;border-radius:14px;padding:14px;text-align:center;">
+        <div style="font-size:20px;font-weight:700;color:#C9A84C;">{{ groupCount }}</div>
+        <div style="font-size:11px;color:#8A8A8A;margin-top:2px;">groups</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#4A4A4A;text-transform:uppercase;margin-bottom:10px;">availability this week</div>
+      <div style="display:grid;grid-template-columns:32px repeat(7,1fr);gap:5px;align-items:center;">
+        <div></div>
+        <sc-for list="{{ dayLabels }}" as="dl" hint-placeholder-count="7">
+          <div style="font-size:10px;color:#4A4A4A;text-align:center;">{{ dl }}</div>
+        </sc-for>
+        <sc-for list="{{ availabilityRows }}" as="row" hint-placeholder-count="3">
+          <div style="font-size:10px;color:#4A4A4A;">{{ row.label }}</div>
+          <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="7">
+            <div onClick="{{ c.onToggle }}" style="height:26px;border-radius:6px;background:{{ c.bg }};border:1px solid {{ c.border }};cursor:pointer;"></div>
+          </sc-for>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <sc-for list="{{ settingsRows }}" as="sr" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 4px;border-bottom:1px solid #1C1C1C;font-size:14px;color:#ccc;">{{ sr }}<span style="color:#4A4A4A;">›</span></div>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const MEMBERS = [
+  { id:'m1', name:'arh',   hex:'C9A84C', showUpRate:0.92, flakeCount:1, title:'the anchor' },
+  { id:'m2', name:'jade',  hex:'7B68EE', showUpRate:0.78, flakeCount:3, title:'the wildcard' },
+  { id:'m3', name:'ko',    hex:'20B2AA', showUpRate:0.45, flakeCount:8, title:'the ghost' },
+  { id:'m4', name:'priya', hex:'FF6B9D', showUpRate:0.98, flakeCount:0, title:'the hypeman' },
+  { id:'m5', name:'dez',   hex:'FF8C42', showUpRate:0.65, flakeCount:4, title:'the surprise guest' },
+];
+const ACTIVITIES = [
+  { id:'food', label:'food' }, { id:'activity', label:'activity' }, { id:'goingout', label:'going out' },
+  { id:'movie', label:'movie' }, { id:'trip', label:'trip' }, { id:'surprise', label:'surprise me' },
+];
+const TIMEFRAMES = ['this weekend','next week','tonight','flexible'];
+const BUDGETS = ['$0–20','$20–50','$50–100','$100+'];
+const DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
+const EFFORTS = ['low','medium','high'];
+const VIBES = ['we go out','outdoorsy','homebody types','chaotic mix'];
+const ONBOARD_CARDS = [
+  'the gc talks big. yolo makes it real.',
+  'everyone votes. ai picks. you show up.',
+  'no more chasing people for e-transfers.',
+];
+const SUGGESTIONS = [
+  { title:'dinner + bowling', why:'half the group wanted food, half wanted an activity, so we split the difference.', cost:'$30/person', tags:['casual','indoor','groups'] },
+  { title:'sunset patio drinks', why:'most of you said low effort, high vibes this week.', cost:'$25/person', tags:['chill','outdoor','day-drink'] },
+  { title:'movie + late-night diner', why:'two of you can\u2019t do $50+ right now, so this stays cheap.', cost:'$18/person', tags:['budget','indoor','chill'] },
+];
+const GROUPS_SEED = [
+  { id:'g1', name:'the usual suspects', memberIds:['m1','m2','m3','m4','m5'], status:'planning', lastActivityText:'arh wants to plan something', linkCount:14, vibe:'we go out' },
+  { id:'g2', name:'cottage crew', memberIds:['m1','m2','m3'], status:'lockedIn', lastActivityText:'locked in for saturday', linkCount:6, vibe:'outdoorsy' },
+  { id:'g3', name:'film club', memberIds:['m3','m4','m5'], status:'idle', lastActivityText:'last linked 3 weeks ago', linkCount:22, vibe:'homebody types' },
+];
+const STATUS_META = {
+  planning: { label:'planning', color:'#FFD60A' },
+  lockedIn: { label:'locked in', color:'#30D158' },
+  happened: { label:'happened', color:'#8A8A8A' },
+  dead: { label:'dead', color:'#FF453A' },
+  idle: { label:'idle', color:'#2A2A2A' },
+};
+const GOLD = '#C9A84C', SURF2 = '#1C1C1C', BORD = '#2A2A2A';
+
+function memberFg(hex) { return '#' + hex; }
+function memberBg(hex) { return 'rgba(' + parseInt(hex.slice(0,2),16) + ',' + parseInt(hex.slice(2,4),16) + ',' + parseInt(hex.slice(4,6),16) + ',0.15)'; }
+function memberBorder(hex) { return 'rgba(' + parseInt(hex.slice(0,2),16) + ',' + parseInt(hex.slice(2,4),16) + ',' + parseInt(hex.slice(4,6),16) + ',0.5)'; }
+
+class Component extends DCLogic {
+  state = {
+    screen: 'splash', history: [],
+    onboardStep: 0,
+    phoneValue: '', nameValue: '', cityValue: '',
+    selectedGroupId: null,
+    newGroupName: '', newGroupVibe: null, newGroupMemberIds: ['m1'],
+    kickoffActivity: null, kickoffTimeframe: null,
+    surveyPicks: [], surveyBudget: null, surveyDays: [], surveyEffort: null,
+    waitingResponded: 1,
+    aiSelected: null,
+    pollVotes: { m1: null, m2: 'yes', m3: 'pending', m4: 'yes', m5: 'maybe' },
+    rollCall: {},
+    rating: 0,
+    availability: {},
+  };
+
+  go(screen) { this.setState(s => ({ history: [...s.history, s.screen], screen })); }
+  back = () => { this.setState(s => { const h = [...s.history]; const prev = h.pop() || 'home'; return { history: h, screen: prev }; }); };
+
+  member(id) { return MEMBERS.find(m => m.id === id); }
+  currentGroup() { return GROUPS_SEED.find(g => g.id === this.state.selectedGroupId); }
+
+  componentDidMount() {
+    this._interval = setTimeout(() => {}, 0);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const currentUser = MEMBERS[0];
+
+    const goWelcome = () => this.go('welcome');
+    const nextOnboard = () => {
+      if (s.onboardStep < ONBOARD_CARDS.length - 1) this.setState({ onboardStep: s.onboardStep + 1 });
+      else this.go('phoneAuth');
+    };
+    const onboardDots = ONBOARD_CARDS.map((_, i) => ({ size: i === s.onboardStep ? '20px' : '6px', color: i === s.onboardStep ? GOLD : BORD }));
+
+    const onPhoneChange = e => this.setState({ phoneValue: e.target.value });
+    const submitPhone = () => this.go('profileSetup');
+    const onNameChange = e => this.setState({ nameValue: e.target.value });
+    const onCityChange = e => this.setState({ cityValue: e.target.value });
+    const submitProfile = () => this.go('home');
+    const goProfile = () => this.go('profile');
+
+    const groupsList = GROUPS_SEED.map(g => {
+      const meta = STATUS_META[g.status];
+      const members = g.memberIds.map(id => this.member(id));
+      return {
+        id: g.id, name: g.name, statusLabel: meta.label, statusColor: meta.color,
+        statusBg: meta.color + '1A',
+        avatars: members.slice(0, 4).map(m => ({ initial: m.name[0].toUpperCase(), bg: memberBg(m.hex), fg: memberFg(m.hex) })),
+        lastActivityText: g.lastActivityText, linkCount: g.linkCount,
+        onOpen: () => { this.setState({ selectedGroupId: g.id }); this.go('groupHome'); },
+      };
+    });
+    const idleGroup = GROUPS_SEED.find(g => g.status === 'idle');
+    const openIdleGroup = idleGroup ? (() => { this.setState({ selectedGroupId: idleGroup.id }); this.go('groupHome'); }) : (() => {});
+    const goCreateGroup = () => this.go('createGroup');
+
+    const onGroupNameChange = e => this.setState({ newGroupName: e.target.value });
+    const suggestedNames = ['the usual suspects', 'no plans no problem', 'chronically online'].map(n => ({ name: n, onPick: () => this.setState({ newGroupName: n }) }));
+    const memberCandidates = MEMBERS.filter(m => m.id !== 'm1').map(m => {
+      const selected = s.newGroupMemberIds.includes(m.id);
+      return {
+        id: m.id, name: m.name, initial: m.name[0].toUpperCase(),
+        bg: memberBg(m.hex), fg: memberFg(m.hex), border: memberBorder(m.hex),
+        opacity: selected ? '1' : '0.35',
+        onToggle: () => this.setState(st => ({ newGroupMemberIds: selected ? st.newGroupMemberIds.filter(x => x !== m.id) : [...st.newGroupMemberIds, m.id] })),
+      };
+    });
+    const vibeOptions = VIBES.map(v => {
+      const selected = s.newGroupVibe === v;
+      return { label: v, bg: selected ? GOLD + '1F' : SURF2, fg: selected ? GOLD : '#fff', border: selected ? GOLD : BORD, borderW: selected ? '1px' : '0.5px', onPick: () => this.setState({ newGroupVibe: v }) };
+    });
+    const createGroup = () => this.go('home');
+
+    const selGroup = this.currentGroup();
+    let selectedGroup = null;
+    if (selGroup) {
+      const members = selGroup.memberIds.map(id => this.member(id));
+      const ranked = [...members].sort((a, b) => b.showUpRate - a.showUpRate);
+      selectedGroup = {
+        name: selGroup.name, memberCountText: members.length + ' members',
+        feed: [selGroup.lastActivityText, '3/5 voted yes on the last plan', 'you linked up last on july 4'],
+        linkCount: selGroup.linkCount,
+        leaderboard: [ranked[0], ranked[ranked.length - 1]].map(m => ({
+          initial: m.name[0].toUpperCase(), bg: memberBg(m.hex), fg: memberFg(m.hex), border: memberBorder(m.hex),
+          name: m.name, title: m.title, rateText: Math.round(m.showUpRate * 100) + '%', rateColor: m.showUpRate > 0.7 ? '#30D158' : '#FF453A',
+        })),
+      };
+    }
+    const startPlan = () => this.go('kickoff');
+    const goProfileAvailability = () => this.go('profile');
+
+    const activityTiles = ACTIVITIES.map(a => {
+      const selected = s.kickoffActivity === a.id;
+      return { label: a.label, bg: selected ? GOLD + '1F' : '#111', fg: selected ? GOLD : '#fff', border: selected ? GOLD : BORD, borderW: selected ? '1.5px' : '1px', onSelect: () => this.setState({ kickoffActivity: a.id }) };
+    });
+    const timeframeOptions = TIMEFRAMES.map(t => {
+      const selected = s.kickoffTimeframe === t;
+      return { label: t, bg: selected ? GOLD + '1F' : SURF2, fg: selected ? GOLD : '#fff', border: selected ? GOLD : BORD, borderW: selected ? '1px' : '0.5px', onSelect: () => this.setState({ kickoffTimeframe: t }) };
+    });
+    const kickoffCanSendOpacity = (s.kickoffActivity && s.kickoffTimeframe) ? '1' : '0.4';
+    const sendKickoff = () => { if (s.kickoffActivity && s.kickoffTimeframe) this.go('survey'); };
+
+    const surveyTiles = ACTIVITIES.map(a => {
+      const selected = s.surveyPicks.includes(a.id);
+      return { label: a.label, bg: selected ? GOLD + '1F' : SURF2, fg: selected ? GOLD : '#fff', border: selected ? GOLD : BORD, borderW: selected ? '1px' : '0.5px', onToggle: () => this.setState(st => ({ surveyPicks: selected ? st.surveyPicks.filter(x => x !== a.id) : [...st.surveyPicks, a.id] })) };
+    });
+    const budgetOptions = BUDGETS.map(b => {
+      const selected = s.surveyBudget === b;
+      return { label: b, bg: selected ? GOLD + '1F' : SURF2, fg: selected ? GOLD : '#fff', border: selected ? GOLD : BORD, borderW: selected ? '1px' : '0.5px', onSelect: () => this.setState({ surveyBudget: b }) };
+    });
+    const dayOptions = DAYS.map((d, i) => {
+      const selected = s.surveyDays.includes(i);
+      return { label: d, bg: selected ? GOLD + '1F' : '#111', fg: selected ? GOLD : '#8A8A8A', border: selected ? GOLD : BORD, borderW: selected ? '1.5px' : '1px', onToggle: () => this.setState(st => ({ surveyDays: selected ? st.surveyDays.filter(x => x !== i) : [...st.surveyDays, i] })) };
+    });
+    const effortOptions = EFFORTS.map(e => {
+      const selected = s.surveyEffort === e;
+      return { label: e, bg: selected ? GOLD + '1F' : '#111', fg: selected ? GOLD : '#8A8A8A', border: selected ? GOLD : BORD, borderW: selected ? '1.5px' : '1px', onSelect: () => this.setState({ surveyEffort: e }) };
+    });
+    const submitSurvey = () => this.go('waitingRoom');
+
+    const groupMembers = selGroup ? selGroup.memberIds.map(id => this.member(id)) : MEMBERS;
+    const waitingMembers = groupMembers.map((m, i) => {
+      const responded = i < s.waitingResponded;
+      return { name: m.name, initial: m.name[0].toUpperCase(), bg: memberBg(m.hex), fg: memberFg(m.hex), border: memberBorder(m.hex), opacity: responded ? '1' : '0.35', responded, nameColor: responded ? '#fff' : '#4A4A4A' };
+    });
+    const allResponded = s.waitingResponded >= groupMembers.length;
+    const nudge = () => this.setState(st => ({ waitingResponded: Math.min(groupMembers.length, st.waitingResponded + 1) }));
+    const goAiSuggestion = () => this.go('aiSuggestion');
+
+    const suggestions = SUGGESTIONS.map((sg, i) => {
+      const selected = s.aiSelected === i;
+      return { ...sg, borderW: selected ? '1.5px' : '1px', border: selected ? GOLD : BORD, onSelect: () => this.setState({ aiSelected: i }) };
+    });
+    const lockOpacity = s.aiSelected !== null ? '1' : '0.4';
+    const lockSuggestion = () => { if (s.aiSelected !== null) this.go('finalPoll'); };
+
+    const chosenPlan = s.aiSelected !== null
+      ? { title: SUGGESTIONS[s.aiSelected].title, dayText: s.kickoffTimeframe || 'this weekend', cost: SUGGESTIONS[s.aiSelected].cost }
+      : { title: SUGGESTIONS[0].title, dayText: 'this weekend', cost: SUGGESTIONS[0].cost };
+
+    const voteMeta = { yes: { label: 'yes', color: '#30D158' }, maybe: { label: 'maybe', color: '#FFD60A' }, cant: { label: "can't make it", color: '#FF453A' } };
+    const voteOptions = ['yes', 'maybe', 'cant'].map(v => {
+      const selected = s.pollVotes.m1 === v;
+      return { label: voteMeta[v].label, bg: selected ? voteMeta[v].color + '1F' : SURF2, fg: selected ? voteMeta[v].color : '#fff', border: selected ? voteMeta[v].color : BORD, borderW: selected ? '1.5px' : '1px', onSelect: () => this.setState(st => ({ pollVotes: { ...st.pollVotes, m1: v } })) };
+    });
+    const pollRoster = groupMembers.map(m => {
+      const vote = s.pollVotes[m.id] || 'pending';
+      const vm = vote === 'pending' ? { label: 'pending', color: '#4A4A4A' } : voteMeta[vote] || { label: vote, color: '#4A4A4A' };
+      return { initial: m.name[0].toUpperCase(), bg: memberBg(m.hex), fg: memberFg(m.hex), border: memberBorder(m.hex), name: m.name, voteLabel: vm.label, voteColor: vm.color };
+    });
+    const yesCount = groupMembers.filter(m => s.pollVotes[m.id] === 'yes').length;
+    const yesPercent = Math.round((yesCount / groupMembers.length) * 100);
+    const yesPercentText = yesPercent + '%';
+    const pollThresholdMet = s.pollVotes.m1 === 'yes';
+    const lockPoll = () => this.go('planLocked');
+
+    const lockedAvatars = groupMembers.map(m => ({ initial: m.name[0].toUpperCase(), bg: memberBg(m.hex), fg: memberFg(m.hex) }));
+    const goPostEvent = () => this.go('postEvent');
+
+    const rollCallRoster = groupMembers.map(m => {
+      const status = s.rollCall[m.id] || 'pending';
+      return {
+        initial: m.name[0].toUpperCase(), bg: memberBg(m.hex), fg: memberFg(m.hex), border: memberBorder(m.hex), name: m.name,
+        showedBg: status === 'showed' ? '#30D1581F' : '#111', showedFg: status === 'showed' ? '#30D158' : '#8A8A8A',
+        flakedBg: status === 'flaked' ? '#FF453A1F' : '#111', flakedFg: status === 'flaked' ? '#FF453A' : '#8A8A8A',
+        onShowed: () => this.setState(st => ({ rollCall: { ...st.rollCall, [m.id]: 'showed' } })),
+        onFlaked: () => this.setState(st => ({ rollCall: { ...st.rollCall, [m.id]: 'flaked' } })),
+      };
+    });
+    const starRow = [1, 2, 3, 4, 5].map(n => ({ glyph: n <= s.rating ? '★' : '☆', color: n <= s.rating ? GOLD : BORD, onClick: () => this.setState({ rating: n }) }));
+    const photoSlots = [1, 2, 3, 4];
+    const savePostEvent = () => this.go('groupHome');
+
+    const groupCount = GROUPS_SEED.filter(g => g.memberIds.includes('m1')).length;
+    const dayLabels = DAYS;
+    const slots = ['morning', 'afternoon', 'evening'];
+    const availabilityRows = slots.map((label, si) => ({
+      label,
+      cells: DAYS.map((_, di) => {
+        const key = di + '-' + si;
+        const on = !!s.availability[key];
+        return { bg: on ? GOLD + '2A' : '#111', border: on ? GOLD : BORD, onToggle: () => this.setState(st => ({ availability: { ...st.availability, [key]: !on } })) };
+      }),
+    }));
+    const settingsRows = ['notifications', 'location privacy', 'connected accounts'];
+
+    return {
+      isSplash: s.screen === 'splash', isWelcome: s.screen === 'welcome', isPhoneAuth: s.screen === 'phoneAuth',
+      isProfileSetup: s.screen === 'profileSetup', isHome: s.screen === 'home', isCreateGroup: s.screen === 'createGroup',
+      isGroupHome: s.screen === 'groupHome', isKickoff: s.screen === 'kickoff', isSurvey: s.screen === 'survey',
+      isWaitingRoom: s.screen === 'waitingRoom', isAiSuggestion: s.screen === 'aiSuggestion', isFinalPoll: s.screen === 'finalPoll',
+      isPlanLocked: s.screen === 'planLocked', isPostEvent: s.screen === 'postEvent', isProfile: s.screen === 'profile',
+      back: this.back,
+      goWelcome, onboardCard: { text: ONBOARD_CARDS[s.onboardStep] }, onboardDots, onboardCta: s.onboardStep < ONBOARD_CARDS.length - 1 ? 'next →' : "let's go →", nextOnboard,
+      phoneValue: s.phoneValue, onPhoneChange, submitPhone,
+      nameValue: s.nameValue, onNameChange, cityValue: s.cityValue, onCityChange, submitProfile,
+      currentUser: {
+        initial: currentUser.name[0].toUpperCase(), name: currentUser.name, title: currentUser.title,
+        totalLinks: GROUPS_SEED.reduce((a, g) => a + (g.memberIds.includes('m1') ? g.linkCount : 0), 0),
+        showUpText: Math.round(currentUser.showUpRate * 100) + '%',
+      },
+      goProfile, groupsList, hasIdleBanner: !!idleGroup, idleGroupName: idleGroup ? idleGroup.name : '', openIdleGroup, goCreateGroup,
+      newGroupName: s.newGroupName, onGroupNameChange, suggestedNames, memberCandidates, vibeOptions, createGroup,
+      selectedGroup, startPlan, goProfileAvailability,
+      activityTiles, timeframeOptions, kickoffCanSendOpacity, sendKickoff,
+      surveyTiles, budgetOptions, dayOptions, effortOptions, submitSurvey,
+      waitingMembers, allResponded, nudge, goAiSuggestion,
+      suggestions, lockOpacity, lockSuggestion,
+      chosenPlan, voteOptions, pollRoster, yesPercentText, pollThresholdMet, lockPoll,
+      lockedAvatars, goPostEvent,
+      rollCallRoster, starRow, photoSlots, savePostEvent,
+      groupCount, dayLabels, availabilityRows, settingsRows,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
