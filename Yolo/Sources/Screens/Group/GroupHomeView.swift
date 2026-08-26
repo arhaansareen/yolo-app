@@ -10,6 +10,7 @@ struct GroupHomeView: View {
     @State private var showMapTriangulation = false
     @State private var showBigTrip = false
     @State private var showAccountabilityDashboard = false
+    @State private var showLiveTravel = false
 
     private var accentColor: Color { group.members.first?.avatarColor ?? .yoloGold }
 
@@ -24,6 +25,7 @@ struct GroupHomeView: View {
                         statsRow
                         planCTA
                         findSpotRow
+                        liveTravelRow
                         availabilityRow
                         bigTripRow
                         accountabilitySection
@@ -53,6 +55,10 @@ struct GroupHomeView: View {
         }
         .sheet(isPresented: $showAccountabilityDashboard) {
             AccountabilityDashboardView(group: group)
+        }
+        .sheet(isPresented: $showLiveTravel) {
+            LiveTravelView(group: group)
+                .environment(appState)
         }
     }
 
@@ -155,6 +161,29 @@ struct GroupHomeView: View {
                     .padding(.vertical, 3)
                     .background(Color.yoloGold)
                     .clipShape(Capsule())
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.yoloTextTertiary)
+            }
+            .padding(.horizontal, YoloSpacing.md)
+            .frame(height: 48)
+            .background(Color.yoloSurface)
+            .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous).strokeBorder(Color.yoloBorder, lineWidth: 0.5))
+        }
+        .buttonStyle(PressEffectButtonStyle())
+    }
+
+    private var liveTravelRow: some View {
+        Button { showLiveTravel = true } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "car.fill")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.yoloAmber)
+                Text("we're heading there")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.white)
+                Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 12))
                     .foregroundStyle(Color.yoloTextTertiary)
