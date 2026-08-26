@@ -3,7 +3,7 @@ import Observation
 
 @Observable
 class AppState {
-    var isOnboardingComplete: Bool = true
+    var isOnboardingComplete: Bool = false
     var currentUser: Member = Member(
         id: UUID(),
         name: "arh",

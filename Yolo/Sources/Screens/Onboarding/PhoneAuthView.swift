@@ -4,6 +4,7 @@ struct PhoneAuthView: View {
     @State private var phoneNumber = ""
     @State private var showOTP = false
     @State private var otpCode = ""
+    @State private var navigateToProfile = false
     @FocusState private var fieldFocused: Bool
 
     var body: some View {
@@ -42,7 +43,7 @@ struct PhoneAuthView: View {
                         style: (showOTP ? otpCode.count == 6 : phoneNumber.count >= 10) ? .primary : .ghost
                     ) {
                         if showOTP {
-                            // verify OTP — navigate to profile
+                            navigateToProfile = true
                         } else {
                             withAnimation(YoloSpring.smooth) {
                                 showOTP = true
@@ -64,6 +65,9 @@ struct PhoneAuthView: View {
         }
         .hideNavigationBar()
         .onAppear { fieldFocused = true }
+        .navigationDestination(isPresented: $navigateToProfile) {
+            ProfileSetupView()
+        }
     }
 }
 
@@ -72,7 +76,7 @@ private struct PhoneField: View {
 
     var body: some View {
         HStack(spacing: YoloSpacing.sm) {
-            Text("🇨🇦 +1")
+            Text("+1")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundStyle(Color.white)
                 .padding(.leading, YoloSpacing.md)
