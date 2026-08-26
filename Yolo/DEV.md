@@ -35,6 +35,10 @@ After any structural changes (new files, new targets), re-run `xcodegen generate
 
 **Models** in `Sources/Models/Models.swift` — all structs with mock data as static extensions. No persistence yet; everything is in-memory.
 
+## Platform Constraints
+
+This is a SwiftUI app targeting iOS 17+. Never use hardcoded colors or custom web-like shadows; strictly rely on Apple HIG semantic colors and native materials.
+
 ## Key Conventions
 
 - All user-facing strings are lowercase by design (brand voice).
