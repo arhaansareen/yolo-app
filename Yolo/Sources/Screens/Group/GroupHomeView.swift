@@ -7,6 +7,9 @@ struct GroupHomeView: View {
     @State private var showPlanning = false
     @State private var showAvailability = false
     @State private var showInvite = false
+    @State private var showMapTriangulation = false
+    @State private var showBigTrip = false
+    @State private var showAccountabilityDashboard = false
 
     private var accentColor: Color { group.members.first?.avatarColor ?? .yoloGold }
 
@@ -20,7 +23,9 @@ struct GroupHomeView: View {
                     VStack(spacing: YoloSpacing.md) {
                         statsRow
                         planCTA
+                        findSpotRow
                         availabilityRow
+                        bigTripRow
                         accountabilitySection
                         recentSection
                     }
@@ -39,6 +44,15 @@ struct GroupHomeView: View {
         }
         .sheet(isPresented: $showInvite) {
             InviteView(group: group)
+        }
+        .sheet(isPresented: $showMapTriangulation) {
+            MapTriangulationView(group: group, onConfirm: { showMapTriangulation = false })
+        }
+        .sheet(isPresented: $showBigTrip) {
+            BigTripView(group: group)
+        }
+        .sheet(isPresented: $showAccountabilityDashboard) {
+            AccountabilityDashboardView(group: group)
         }
     }
 
@@ -124,6 +138,36 @@ struct GroupHomeView: View {
         .buttonStyle(GoldPressButtonStyle())
     }
 
+    private var findSpotRow: some View {
+        Button { showMapTriangulation = true } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "map.fill")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.yoloGold)
+                Text("find the fairest spot")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.white)
+                Spacer()
+                Text("new")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(Color.black)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.yoloGold)
+                    .clipShape(Capsule())
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.yoloTextTertiary)
+            }
+            .padding(.horizontal, YoloSpacing.md)
+            .frame(height: 48)
+            .background(Color.yoloSurface)
+            .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous).strokeBorder(Color.yoloBorder, lineWidth: 0.5))
+        }
+        .buttonStyle(PressEffectButtonStyle())
+    }
+
     private var availabilityRow: some View {
         Button { showAvailability = true } label: {
             HStack(spacing: 10) {
@@ -153,13 +197,36 @@ struct GroupHomeView: View {
         .buttonStyle(PressEffectButtonStyle())
     }
 
+    private var bigTripRow: some View {
+        Button { showBigTrip = true } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "suitcase.fill")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.yoloGold)
+                Text("big trip mode")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.white)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.yoloTextTertiary)
+            }
+            .padding(.horizontal, YoloSpacing.md)
+            .frame(height: 48)
+            .background(Color.yoloSurface)
+            .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous).strokeBorder(Color.yoloBorder, lineWidth: 0.5))
+        }
+        .buttonStyle(PressEffectButtonStyle())
+    }
+
     // MARK: - Accountability
 
     @State private var selectedMember: Member? = nil
 
     private var accountabilitySection: some View {
         VStack(alignment: .leading, spacing: YoloSpacing.sm) {
-            SectionHeader(title: "accountability", action: "see all") {}
+            SectionHeader(title: "accountability", action: "see all") { showAccountabilityDashboard = true }
 
             VStack(spacing: 0) {
                 ForEach(Array(group.members.sorted { $0.showUpRate > $1.showUpRate }.enumerated()), id: \.element.id) { idx, member in

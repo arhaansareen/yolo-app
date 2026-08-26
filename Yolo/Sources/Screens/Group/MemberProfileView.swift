@@ -71,6 +71,24 @@ struct MemberProfileView: View {
                     .foregroundStyle(Color.yoloTextSecondary)
             }
 
+            if !member.dietaryTags.isEmpty {
+                HStack(spacing: 6) {
+                    ForEach(member.dietaryTags, id: \.self) { tag in
+                        HStack(spacing: 4) {
+                            Image(systemName: tag.icon)
+                                .font(.system(size: 9))
+                            Text(tag.rawValue)
+                                .font(.system(size: 10, weight: .medium))
+                        }
+                        .foregroundStyle(Color.yoloTextSecondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.yoloSurface2)
+                        .clipShape(Capsule())
+                    }
+                }
+            }
+
             Text("in \(groupName)")
                 .font(.system(size: 12))
                 .foregroundStyle(Color.yoloTextTertiary)

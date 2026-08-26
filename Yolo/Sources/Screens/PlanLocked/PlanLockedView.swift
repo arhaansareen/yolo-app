@@ -80,7 +80,7 @@ struct PlanLockedView: View {
 
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("COST / PERSON")
+                    Text("cost / person")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color.yoloTextTertiary)
                         .tracking(0.8)
@@ -90,7 +90,7 @@ struct PlanLockedView: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 3) {
-                    Text("WHO'S IN")
+                    Text("who's in")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color.yoloTextTertiary)
                         .tracking(0.8)
@@ -156,6 +156,7 @@ private struct ConfettiPiece: View {
     @State private var rotation: Double = 0
     let color: Color
     let startX: CGFloat
+    let screenHeight: CGFloat
 
     var body: some View {
         RoundedRectangle(cornerRadius: 2).fill(color)
@@ -166,7 +167,7 @@ private struct ConfettiPiece: View {
             .onAppear {
                 position = CGPoint(x: startX, y: -20)
                 withAnimation(.easeIn(duration: Double.random(in: 1.1...1.9))) {
-                    position = CGPoint(x: startX + CGFloat.random(in: -60...60), y: UIScreen.main.bounds.height + 40)
+                    position = CGPoint(x: startX + CGFloat.random(in: -60...60), y: screenHeight + 40)
                     opacity = 0
                     rotation = Double.random(in: 180...720)
                 }
@@ -177,10 +178,13 @@ private struct ConfettiPiece: View {
 private struct ConfettiLayer: View {
     private let colors: [Color] = [.yoloGold, .yoloGoldLight, .white, .yoloGreen, .yoloAmber]
     var body: some View {
-        ZStack {
-            ForEach(0..<36, id: \.self) { i in
-                ConfettiPiece(color: colors[i % colors.count],
-                              startX: CGFloat.random(in: 0...UIScreen.main.bounds.width))
+        GeometryReader { geo in
+            ZStack {
+                ForEach(0..<36, id: \.self) { i in
+                    ConfettiPiece(color: colors[i % colors.count],
+                                  startX: CGFloat.random(in: 0...geo.size.width),
+                                  screenHeight: geo.size.height)
+                }
             }
         }
     }

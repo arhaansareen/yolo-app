@@ -65,10 +65,10 @@ struct FinalPollView: View {
 
     private var planCard: some View {
         VStack(alignment: .leading, spacing: YoloSpacing.sm) {
-            Text("THE PLAN")
+            Text("the plan")
                 .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(Color.yoloGold)
-                .tracking(1)
+                .foregroundStyle(Color.yoloTextTertiary)
+                .tracking(0.8)
 
             Text(suggestion.title)
                 .font(.system(size: 22, weight: .bold))
@@ -82,7 +82,7 @@ struct FinalPollView: View {
 
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("COST / PERSON")
+                    Text("cost / person")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color.yoloTextTertiary)
                         .tracking(0.8)
@@ -92,7 +92,7 @@ struct FinalPollView: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 3) {
-                    Text("WHO'S IN")
+                    Text("who's in")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color.yoloTextTertiary)
                         .tracking(0.8)

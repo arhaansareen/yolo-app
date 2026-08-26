@@ -221,28 +221,112 @@ struct GroupCard: View {
     }
 }
 
-// MARK: - Placeholder tabs
+// MARK: - Activity Tab
 
 struct ActivityTabView: View {
+    @Environment(AppState.self) private var appState
+
+    private struct ActivityItem: Identifiable {
+        let id = UUID()
+        let icon: String
+        let iconColor: Color
+        let title: String
+        let subtitle: String
+        let time: String
+        let isUnread: Bool
+    }
+
+    private let items: [ActivityItem] = [
+        ActivityItem(icon: "lock.fill",             iconColor: .yoloGold,  title: "the usual suspects locked in", subtitle: "dinner + bowling · saturday 7pm",     time: "just now", isUnread: true),
+        ActivityItem(icon: "person.fill.checkmark", iconColor: .yoloGreen, title: "jade voted yes",               subtitle: "sunset patio drinks poll",             time: "2m ago",   isUnread: true),
+        ActivityItem(icon: "flame.fill",            iconColor: .yoloGold,  title: "7-link streak!",               subtitle: "the usual suspects · keep it going",   time: "1h ago",   isUnread: false),
+        ActivityItem(icon: "bell.fill",             iconColor: .yoloAmber, title: "ko hasn't responded",          subtitle: "the poll closes in 3 hours",           time: "3h ago",   isUnread: false),
+        ActivityItem(icon: "checkmark.circle.fill", iconColor: .yoloGreen, title: "plan confirmed",               subtitle: "bowling at splitsville · last friday", time: "2d ago",   isUnread: false),
+        ActivityItem(icon: "xmark.circle.fill",     iconColor: .yoloRed,   title: "priya flaked",                 subtitle: "cottage weekend · updated her score",  time: "5d ago",   isUnread: false),
+    ]
+
     var body: some View {
-        VStack(spacing: YoloSpacing.sm) {
-            Spacer()
-            Image(systemName: "bell.slash")
-                .font(.system(size: 36, weight: .light))
-                .foregroundStyle(Color.yoloTextTertiary)
-            Text("no activity yet")
-                .font(.system(size: 15))
-                .foregroundStyle(Color.yoloTextSecondary)
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("activity")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(Color.white)
+                    Text("what's happening with your crew")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.yoloTextSecondary)
+                }
+                .padding(.horizontal, YoloSpacing.md)
+                .padding(.top, 64)
+                .padding(.bottom, YoloSpacing.lg)
+
+                if items.isEmpty {
+                    EmptyStateView(
+                        icon: "bell.slash",
+                        title: "all caught up",
+                        subtitle: "activity from your groups will show here"
+                    )
+                    .padding(.top, YoloSpacing.xxl)
+                } else {
+                    VStack(spacing: 0) {
+                        ForEach(Array(items.enumerated()), id: \.element.id) { idx, item in
+                            if idx > 0 {
+                                Divider()
+                                    .background(Color.yoloBorder)
+                                    .padding(.leading, YoloSpacing.md + 6 + YoloSpacing.sm + 40 + YoloSpacing.sm)
+                            }
+                            activityRow(item)
+                        }
+                    }
+                }
+
+                Color.clear.frame(height: 110)
+            }
+        }
+        .background(Color.black)
+    }
+
+    private func activityRow(_ item: ActivityItem) -> some View {
+        HStack(alignment: .top, spacing: YoloSpacing.sm) {
+            Circle()
+                .fill(item.isUnread ? Color.yoloGold : Color.clear)
+                .frame(width: 6, height: 6)
+                .padding(.top, 17)
+
+            ZStack {
+                Circle()
+                    .fill(item.iconColor.opacity(0.15))
+                    .frame(width: 40, height: 40)
+                Image(systemName: item.icon)
+                    .font(.system(size: 16))
+                    .foregroundStyle(item.iconColor)
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(item.title)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Color.white)
+                Text(item.subtitle)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Color.yoloTextSecondary)
+                    .lineLimit(1)
+                Text(item.time)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.yoloTextTertiary)
+            }
+            .padding(.top, 2)
+
             Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black)
+        .padding(.horizontal, YoloSpacing.md)
+        .padding(.vertical, 12)
     }
 }
 
 struct ProfileTabView: View {
     @Environment(AppState.self) private var appState
     @State private var freeSlots: Set<String> = []
+    @State private var showSettings = false
 
     private let days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
     private let slots = ["morning", "afternoon", "evening"]
@@ -255,13 +339,13 @@ struct ProfileTabView: View {
                 VStack(spacing: YoloSpacing.sm) {
                     ZStack {
                         Circle()
-                            .fill(Color.yoloGold)
+                            .fill(appState.currentUser.avatarColor)
                             .frame(width: 52, height: 52)
-                        Text("A")
+                        Text(appState.currentUser.name.prefix(1).uppercased())
                             .font(.system(size: 22, weight: .bold))
                             .foregroundStyle(.black)
                     }
-                    Text("arh")
+                    Text(appState.currentUser.name)
                         .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(Color.white)
                     Text("the anchor")
@@ -338,17 +422,21 @@ struct ProfileTabView: View {
                 VStack(spacing: 0) {
                     ForEach(["notifications", "privacy", "connected accounts"], id: \.self) { row in
                         VStack(spacing: 0) {
-                            HStack {
-                                Text(row)
-                                    .font(.system(size: 15, weight: .medium))
-                                    .foregroundStyle(Color.white)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundStyle(Color.yoloTextTertiary)
+                            Button { showSettings = true } label: {
+                                HStack {
+                                    Text(row)
+                                        .font(.system(size: 15, weight: .medium))
+                                        .foregroundStyle(Color.white)
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundStyle(Color.yoloTextTertiary)
+                                }
+                                .padding(.horizontal, YoloSpacing.md)
+                                .padding(.vertical, 14)
+                                .contentShape(Rectangle())
                             }
-                            .padding(.horizontal, YoloSpacing.md)
-                            .padding(.vertical, 14)
+                            .buttonStyle(PressEffectButtonStyle())
 
                             if row != "connected accounts" {
                                 Divider()
@@ -370,6 +458,7 @@ struct ProfileTabView: View {
             }
         }
         .background(Color.black)
+        .sheet(isPresented: $showSettings) { SettingsView() }
     }
 }
 

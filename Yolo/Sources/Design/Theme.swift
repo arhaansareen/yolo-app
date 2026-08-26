@@ -6,7 +6,6 @@ extension Color {
     static let yoloGoldDim    = Color(hex: "6B5520")
     static let yoloSurface    = Color(hex: "111111")
     static let yoloSurface2   = Color(hex: "1C1C1C")
-    static let yoloSurface3   = Color(hex: "242424")
     static let yoloBorder     = Color(hex: "2A2A2A")
     static let yoloBorderGold = Color(hex: "C9A84C").opacity(0.22)
     static let yoloTextSecondary = Color(hex: "8A8A8A")
@@ -14,7 +13,8 @@ extension Color {
     static let yoloGreen  = Color(hex: "30D158")
     static let yoloAmber  = Color(hex: "FFD60A")
     static let yoloRed    = Color(hex: "FF453A")
-    static let yoloBlue   = Color(hex: "0A84FF")
+    static let yoloTextPrimary = Color.white
+    static let yoloBg          = Color.black
 
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -53,6 +53,16 @@ struct YoloSpacing {
     static let lg:  CGFloat = 24
     static let xl:  CGFloat = 32
     static let xxl: CGFloat = 48
+}
+
+struct YoloShadow {
+    static let gold = (color: Color.yoloGold.opacity(0.30), radius: CGFloat(14), y: CGFloat(5))
+    static let card = (color: Color.black.opacity(0.4), radius: CGFloat(8), y: CGFloat(3))
+}
+
+struct YoloEasing {
+    static let fade    = Animation.easeOut(duration: 0.22)
+    static let shimmer = Animation.linear(duration: 1.2).repeatForever(autoreverses: false)
 }
 
 extension View {

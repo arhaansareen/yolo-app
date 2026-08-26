@@ -9,6 +9,7 @@ struct SurveyView: View {
     @State private var selectedBudget: PlanResponse.BudgetTier = .low
     @State private var selectedDays: Set<Int> = []
     @State private var effortLevel: PlanResponse.EffortLevel = .medium
+    @State private var selectedDietary: Set<Member.DietaryTag> = []
     @State private var navigate = false
 
     private let days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
@@ -35,6 +36,7 @@ struct SurveyView: View {
                         budgetSection
                         availabilitySection
                         effortSection
+                        dietarySection
                     }
                     .padding(.horizontal, YoloSpacing.md)
                     .padding(.top, YoloSpacing.md)
@@ -187,6 +189,45 @@ struct SurveyView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: YoloRadius.md, style: .continuous)
                                 .strokeBorder(effortLevel == level ? Color.clear : Color.yoloBorder, lineWidth: 0.5)
+                        )
+                    }
+                    .buttonStyle(PressEffectButtonStyle())
+                }
+            }
+        }
+    }
+
+    private var dietarySection: some View {
+        VStack(alignment: .leading, spacing: YoloSpacing.sm) {
+            SectionHeader(title: "any dietary needs?")
+            Text("we'll filter venue suggestions for the whole group")
+                .font(.system(size: 12))
+                .foregroundStyle(Color.yoloTextSecondary)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))], spacing: YoloSpacing.xs) {
+                ForEach(Member.DietaryTag.allCases, id: \.self) { tag in
+                    let isSelected = selectedDietary.contains(tag)
+                    Button {
+                        withAnimation(YoloSpring.bouncy) {
+                            if isSelected { selectedDietary.remove(tag) }
+                            else { selectedDietary.insert(tag) }
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: tag.icon)
+                                .font(.system(size: 12))
+                                .foregroundStyle(isSelected ? Color.yoloGold : Color.yoloTextSecondary)
+                            Text(tag.rawValue)
+                                .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                                .foregroundStyle(isSelected ? Color.white : Color.yoloTextSecondary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(isSelected ? Color.yoloGold.opacity(0.1) : Color.yoloSurface)
+                        .clipShape(RoundedRectangle(cornerRadius: YoloRadius.md, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: YoloRadius.md, style: .continuous)
+                                .strokeBorder(isSelected ? Color.yoloGold : Color.yoloBorder, lineWidth: isSelected ? 1 : 0.5)
                         )
                     }
                     .buttonStyle(PressEffectButtonStyle())

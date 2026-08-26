@@ -7,6 +7,7 @@ struct Member: Identifiable, Hashable, Equatable {
     var showUpRate: Double
     var flakeCount: Int
     var title: MemberTitle
+    var dietaryTags: [DietaryTag] = []
 
     var avatarColor: Color { Color(hex: colorHex) }
 
@@ -17,6 +18,28 @@ struct Member: Identifiable, Hashable, Equatable {
         case hypeman = "the hypeman"
         case planner = "the planner"
         case surpriseGuest = "the surprise guest"
+    }
+
+    enum DietaryTag: String, CaseIterable, Codable, Hashable {
+        case vegetarian = "vegetarian"
+        case vegan = "vegan"
+        case halalOnly = "halal only"
+        case kosher = "kosher"
+        case glutenFree = "gluten free"
+        case dairyFree = "dairy free"
+        case nutAllergy = "nut allergy"
+        case pescatarian = "pescatarian"
+
+        var icon: String {
+            switch self {
+            case .vegetarian, .vegan: return "leaf.fill"
+            case .halalOnly, .kosher: return "moon.stars.fill"
+            case .glutenFree: return "allergens"
+            case .dairyFree: return "drop.fill"
+            case .nutAllergy: return "exclamationmark.triangle.fill"
+            case .pescatarian: return "fish.fill"
+            }
+        }
     }
 }
 
@@ -154,11 +177,11 @@ struct AISuggestion: Identifiable, Hashable {
 
 extension Member {
     static let mockMembers: [Member] = [
-        Member(id: UUID(), name: "arh", colorHex: "C9A84C", showUpRate: 0.92, flakeCount: 1, title: .anchor),
-        Member(id: UUID(), name: "jade", colorHex: "7B68EE", showUpRate: 0.78, flakeCount: 3, title: .wildcard),
-        Member(id: UUID(), name: "ko", colorHex: "20B2AA", showUpRate: 0.45, flakeCount: 8, title: .ghost),
-        Member(id: UUID(), name: "priya", colorHex: "FF6B9D", showUpRate: 0.98, flakeCount: 0, title: .hypeman),
-        Member(id: UUID(), name: "dez", colorHex: "FF8C42", showUpRate: 0.65, flakeCount: 4, title: .surpriseGuest),
+        Member(id: UUID(), name: "arh", colorHex: "C9A84C", showUpRate: 0.92, flakeCount: 1, title: .anchor, dietaryTags: []),
+        Member(id: UUID(), name: "jade", colorHex: "7B68EE", showUpRate: 0.78, flakeCount: 3, title: .wildcard, dietaryTags: [.vegetarian]),
+        Member(id: UUID(), name: "ko", colorHex: "20B2AA", showUpRate: 0.45, flakeCount: 8, title: .ghost, dietaryTags: []),
+        Member(id: UUID(), name: "priya", colorHex: "FF6B9D", showUpRate: 0.98, flakeCount: 0, title: .hypeman, dietaryTags: [.halalOnly]),
+        Member(id: UUID(), name: "dez", colorHex: "FF8C42", showUpRate: 0.65, flakeCount: 4, title: .surpriseGuest, dietaryTags: [.glutenFree]),
     ]
 }
 
