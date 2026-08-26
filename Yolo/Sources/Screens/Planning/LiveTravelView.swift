@@ -112,6 +112,13 @@ final class LiveTravelViewModel {
         }
     }
 
+    func resetDemo() {
+        withAnimation(YoloSpring.smooth) {
+            for m in members { statuses[m.id] = .notLeft }
+        }
+        simulateOthers()
+    }
+
     // Demo: simulate other members trickling in
     func simulateOthers() {
         let others = members.filter { $0.id != currentUserId }
@@ -230,7 +237,14 @@ struct LiveTravelView: View {
             .clipShape(Capsule())
 
             Spacer()
-            Color.clear.frame(width: 28)
+
+            Button { viewModel.resetDemo() } label: {
+                Image(systemName: "arrow.counterclockwise")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Color.white.opacity(0.8))
+                    .frame(width: 28, height: 28)
+            }
+            .buttonStyle(PressEffectButtonStyle())
         }
         .padding(.horizontal, YoloSpacing.md)
         .padding(.top, 56)
