@@ -215,7 +215,10 @@ struct GroupHomeView: View {
             .frame(height: 48)
             .background(Color.yoloSurface)
             .clipShape(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous).strokeBorder(Color.yoloBorder, lineWidth: 0.5))
+            .overlay(
+                RoundedRectangle(cornerRadius: YoloRadius.lg, style: .continuous)
+                    .strokeBorder(Color.yoloBorder, lineWidth: 0.5)
+            )
         }
         .buttonStyle(PressEffectButtonStyle())
     }
@@ -226,7 +229,9 @@ struct GroupHomeView: View {
 
     private var accountabilitySection: some View {
         VStack(alignment: .leading, spacing: YoloSpacing.sm) {
-            SectionHeader(title: "accountability", action: "see all") { showAccountabilityDashboard = true }
+            SectionHeader(title: "accountability", action: "see all") {
+                showAccountabilityDashboard = true
+            }
 
             VStack(spacing: 0) {
                 ForEach(Array(group.members.sorted { $0.showUpRate > $1.showUpRate }.enumerated()), id: \.element.id) { idx, member in
